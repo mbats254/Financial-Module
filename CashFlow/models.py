@@ -1,10 +1,11 @@
 from django.db import models
+from datetime import datetime
 
 # Create your models here.
 class Income(models.Model):
     source = models.CharField(max_length=100)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    date = models.DateField()
+    date = models.DateField(null=True, blank=True)
     description = models.TextField(blank=True, null=True)
 
     def __str__(self):
@@ -30,7 +31,7 @@ class FinancialHealth(models.Model):
     
 class BankReconciliation(models.Model):
     date = models.DateField()
-    bank_account = models.ForeignKey('BankAccount', on_delete=models.CASCADE)
+    # bank_account = models.ForeignKey('BankAccount', on_delete=models.CASCADE)
     statement_balance = models.DecimalField(max_digits=10, decimal_places=2)
     actual_balance = models.DecimalField(max_digits=10, decimal_places=2)
     is_reconciled = models.BooleanField(default=False)
@@ -41,7 +42,7 @@ class BankReconciliation(models.Model):
     
 class CashForecast(models.Model):
     date = models.DateField()
-    cash_account = models.ForeignKey('CashAccount', on_delete=models.CASCADE)
+    # cash_account = models.ForeignKey('CashAccount', on_delete=models.CASCADE)
     forecasted_balance = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
@@ -50,7 +51,7 @@ class CashForecast(models.Model):
 
 class BankTransaction(models.Model):
     date = models.DateField()
-    bank_account = models.ForeignKey('BankAccount', on_delete=models.CASCADE)
+    # bank_account = models.ForeignKey('BankAccount', on_delete=models.CASCADE)
     transaction_type = models.CharField(max_length=100)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     description = models.TextField(blank=True, null=True)
