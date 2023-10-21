@@ -7,7 +7,7 @@ certifi==2023.5.7
 charset-normalizer==3.2.0
 cliapp==1.0.9
 click==8.0.3
-cmdtest==0.32+git
+# cmdtest==0.32+git
 colorama==0.4.4
 command-not-found==0.3
 contourpy==1.1.0
