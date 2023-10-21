@@ -32,11 +32,11 @@ Flask-Cors==4.0.0
 Flask-Mail==0.9.1
 Flask-Migrate==2.6.0
 flask-mongoengine==0.9.1
-Flask-MySQLdb==1.0.1
-Flask-Script==1.0.0
-flask-serialize==2.1.3
-Flask-SQLAlchemy==2.5.1
-Flask-WTF==0.14.3
+# Flask-MySQLdb==1.0.1
+# Flask-Script==1.0.0
+# flask-serialize==2.1.3
+# Flask-SQLAlchemy==2.5.1
+# Flask-WTF==0.14.3
 fonttools==4.42.0
 gpg===1.10.0
 greenlet==1.1.2
