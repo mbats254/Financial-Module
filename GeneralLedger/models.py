@@ -8,6 +8,13 @@ class Account(models.Model):
     def __str__(self):
         return self.name
     
+class JournalEntry(models.Model):
+    date = models.DateField()
+    description = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f"Journal Entry {self.id} on {self.date}"    
+    
 class JournalEntryLine(models.Model):
     journal_entry = models.ForeignKey('JournalEntry', on_delete=models.CASCADE)
     account = models.ForeignKey('Account', on_delete=models.CASCADE)
