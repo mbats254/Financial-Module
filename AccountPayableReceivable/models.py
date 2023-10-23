@@ -54,7 +54,7 @@ class CreditNote(models.Model):
         return self.customer
 
 class PurchaseOrder(models.Model):
-    order_number = models.CharField(max_length=20, unique=True)
+    order_number = models.CharField(max_length=20, unique=True) 
     order_date = models.DateField()
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
@@ -67,9 +67,15 @@ class PaymentReceipt(models.Model):
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
     receipt_date = models.DateField()
     amount_received = models.DecimalField(max_digits=10, decimal_places=2)
+    
+    def __str__(self):
+        return self.id
 
 class SupplierCreditNote(models.Model):
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
     note_date = models.DateField()
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     reason = models.TextField()
+    
+    def __str__(self):
+        return self.id

@@ -130,7 +130,7 @@ class PaymentList(BaseAPIListView):
         try:
             invoice = Invoice.objects.get(pk=request.data['invoice'])
         except Invoice.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            return Response('message:Invoice does not exists',status=status.HTTP_404_NOT_FOUND)
 
         payment_amount = request.data.get('amount_paid')
 

@@ -15,7 +15,7 @@ urlpatterns = [
     path('invoices/<int:pk>/', views.InvoiceDetail.as_view(), name='invoice-detail'),
 
     # URL patterns for Payment model
-    path('payments/', views.PaymentList.as_view(), name='payment-list'),
+    path('payments/list', views.PaymentList.as_view(), name='payment-list'),
     path('payments/<int:pk>/', views.PaymentDetail.as_view(), name='payment-detail'),
 
     # URL patterns for CreditNote model
