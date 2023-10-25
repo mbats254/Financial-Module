@@ -10,6 +10,7 @@ from .serializers import (
     PurchaseOrderSerializer, PaymentReceiptSerializer, SupplierCreditNoteSerializer
 )
 from django.conf import settings
+from TaxManagementandcompliance.models import TaxRate, TaxType
 
 class BaseAPIListView(APIView):
     """
@@ -242,19 +243,51 @@ class InvoicePayment(APIView):
     """
     Mark an invoice as paid.
     """
-    def post(self, request, invoice_id, format=None):
+    def post(self, request, format=None):
+        tax_type_id = request.data.get('tax_type_id')
+        tax_rate_id = request.data.get('tax_rate_id')
         try:
-            invoice = Invoice.objects.get(pk=invoice_id)
+            invoice = Invoice.objects.get(pk=request.data.get('invoice_id'))
         except Invoice.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
+        try:
+            tax_type = TaxType.objects.get(pk=tax_type_id)
+        except TaxType.DoesNotExist:
+            return Response({'message': 'Tax type not found'}, status=404)
+
+        try:
+            tax_rate = TaxRate.objects.get(pk=tax_rate_id)
+        except TaxRate.DoesNotExist:
+            return Response({'message': 'Tax rate not found'}, status=404)
+
+        # Calculate tax based on tax rate and amount_paid
+        tax_amount = (invoice.total_amount * tax_rate.rate_percentage) / 100
+        total_amount = invoice.total_amount + tax_amount
         # Update the invoice's is_paid status
         invoice.is_paid = True
         invoice.save()
-
+        response_data = {
+        'message': 'Payment successful',
+        'invoice_id': invoice,
+        'total_amount_paid': total_amount,
+        'tax_amount': tax_amount
+        }
         # Create a payment record
-        Payment.objects.create(invoice=invoice, payment_date=invoice.due_date, amount_paid=invoice.total_amount)
+        payment = Payment.objects.create(invoice=invoice, payment_date=invoice.due_date, amount_paid=total_amount)
+        recipient_email =  invoice.customer.email
+        recipient_name = invoice.customer.name
 
+        # Send a notification email to the recipient
+        subject = 'Payment Received'
+        message = f'Thank you for the payment of Ksh.{payment.amount_paid} for Invoice #{invoice.invoice_number}.\n{response_data}'
+        from_email = settings.EMAIL_HOST_USER
+        recipient_list = [recipient_email]
+
+        send_mail(subject, message, from_email, recipient_list)
+        # ,'response':response_data
+         # Call the update_status method to update the invoice status
+        invoice.update_status()
         return Response({'message': 'Invoice marked as paid.'}, status=status.HTTP_200_OK)
 
 # Add more APIView classes and functions as needed for custom actions and interactions between the models

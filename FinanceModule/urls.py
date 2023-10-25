@@ -23,4 +23,5 @@ urlpatterns = [
     path(r'cash/', include('CashFlow.urls')),
     path(r'finance/', include('GeneralLedger.urls')),
     path(r'account/payable/', include('AccountPayableReceivable.urls')),
+    path(r'tax/', include('TaxManagementandcompliance.urls')),
 ]

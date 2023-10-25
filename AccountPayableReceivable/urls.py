@@ -35,6 +35,6 @@ urlpatterns = [
     path('suppliercreditnotes/<int:pk>/', views.SupplierCreditNoteDetail.as_view(), name='suppliercreditnote-detail'),
 
     # Custom actions
-    path('invoices/<int:invoice_id>/mark_paid/', views.InvoicePayment.as_view(), name='mark-invoice-paid'),
+    path('invoices/mark_paid/', views.InvoicePayment.as_view(), name='mark-invoice-paid'),
 ]
     
