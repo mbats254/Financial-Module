@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'CashFlow.apps.CashflowConfig',
     'GeneralLedger.apps.GeneralledgerConfig',
     'AccountPayableReceivable.apps.AccountpayablereceivableConfig',
-    'TaxManagementandcompliance.apps.TaxmanagementandcomplianceConfig'
+    'TaxManagementandcompliance.apps.TaxmanagementandcomplianceConfig',
+    'Financialreportinganalytics.apps.FinancialreportinganalyticsConfig'
 ]
 
 MIDDLEWARE = [
