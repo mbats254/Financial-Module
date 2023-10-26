@@ -100,10 +100,8 @@ class BudgetDetail(BaseAPIDetailView):
  
 from .models import FinancialStatement, FinancialAccount
 
-class FinancialStatementGenerator:
-    @staticmethod
-    def generate_income_statement():
-        # Get all income and expense accounts
+class FinancialStatementGenerator(APIView):   
+    def get(self, request, format=None):
         income_accounts = FinancialAccount.objects.filter(account_type='income')
         expense_accounts = FinancialAccount.objects.filter(account_type='expense')
 
@@ -122,14 +120,21 @@ class FinancialStatementGenerator:
         # Calculate net income (revenue - expenses)
         net_income = total_revenue - total_expenses
 
-        return {
+        response =  {
             'total_revenue': total_revenue,
             'total_expenses': total_expenses,
             'net_income': net_income,
         }
+        
+        return Response(response)
+        # return Response(status=status.HTTP_404_NOT_FOUND)
 
-    @staticmethod
-    def generate_balance_sheet():
+    
+        
+    
+
+class GenerateBalanceSheet(APIView):  
+    def get(self ,request, format=None):
         # Get all asset and liability accounts
         asset_accounts = FinancialAccount.objects.filter(account_type='asset')
         liability_accounts = FinancialAccount.objects.filter(account_type='liability')
@@ -149,39 +154,41 @@ class FinancialStatementGenerator:
         # Calculate owner's equity (assets - liabilities)
         owner_equity = total_assets - total_liabilities
 
-        return {
+        return Response( {
             'total_assets': total_assets,
             'total_liabilities': total_liabilities,
             'owner_equity': owner_equity,
-        }
+        })
  
+
         
-        
-class VarianceAnalysis:
-    @staticmethod
-    def calculate_variance(budget_category_id):
+class VarianceAnalysis(APIView):
+    def post(self ,request, format=None):
         # Get the budget category
-        budget_category = BudgetCategory.objects.get(pk=budget_category_id)
+        budget_category = BudgetCategory.objects.get(pk=request.data['budget_category_id'])
 
-        # Get the actual total for the budget category
-        actual_total = FinancialStatement.objects.filter(
-            account__budget_category=budget_category,
+        # Get the financial accounts associated with the budget category
+        financial_accounts = FinancialAccount.objects.filter(account_type=budget_category.category_name.split('_')[0])
+
+        # Calculate the actual total spent for the financial accounts
+        actual_total_spent = FinancialStatement.objects.filter(
+            account__in=financial_accounts,
         ).aggregate(total=models.Sum('amount'))['total'] or 0
 
-        # Get the budgeted total for the budget category
-        budget_total = Budget.objects.filter(
-            budget_category=budget_category,
+        # Get the total budget for the budget category
+        total_budget = Budget.objects.filter(
+            category=budget_category,
         ).aggregate(total=models.Sum('amount'))['total'] or 0
 
-        # Calculate the variance
-        variance = actual_total - budget_total
+        # Calculate the variance (actual total spent - total budget)
+        variance = actual_total_spent - total_budget
 
-        return {
+        return Response( {
             'budget_category': budget_category,
-            'actual_total': actual_total,
-            'budget_total': budget_total,
+            'actual_total': actual_total_spent,
+            'budget_total': total_budget,
             'variance': variance,
-        }        
+        })      
     
     
  
